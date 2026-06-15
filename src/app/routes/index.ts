@@ -1,5 +1,6 @@
 import express from 'express';
 import { AuthRoutes } from '../modules/auth/auth.route';
+import { AvailabilityRoutes } from '../modules/availability/availability.route';
 import { BookingRoutes } from '../modules/booking/booking.route';
 import { OrganizationRoutes } from '../modules/organization/organization.route';
 import { ResourceRoutes } from '../modules/resource/resource.route';
@@ -29,6 +30,11 @@ const moduleRoutes = [
    {
       path: '/booking',
       routes: BookingRoutes,
+   },
+
+   {
+      path: '/availability',
+      routes: AvailabilityRoutes,
    },
 ];
 
