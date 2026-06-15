@@ -3,48 +3,63 @@ import { Schema, model } from 'mongoose';
 import config from '../../../config';
 import { IUser, UserModel } from './user.interface';
 
-const userSchema = new Schema<IUser, UserModel>(
+export enum UserRole {
+   ORG_ADMIN = 'ORG_ADMIN',
+   EMPLOYEE = 'EMPLOYEE',
+}
+
+const userSchema = new Schema(
    {
+      organizationId: {
+         type: Schema.Types.ObjectId,
+         ref: 'Organization',
+         required: true,
+         index: true,
+      },
+
       name: {
          type: String,
-         required: [true, 'Name is required'],
+         required: true,
          trim: true,
       },
-      username: {
-         type: String,
-         unique: true,
-         index: true,
-         lowercase: true,
-         trim: true,
-      },
-      role: {
-         type: String,
-         enum: ['ORG_ADMIN', 'EMPLOYEE'],
-         default: 'EMPLOYEE',
-      },
+
       email: {
          type: String,
-         unique: true,
-         required: [true, 'Email is required'],
-         index: true,
+         required: true,
          lowercase: true,
          trim: true,
       },
+
       password: {
          type: String,
-         required: [true, 'Password is required'],
+         required: true,
+         select: false,
       },
-      avatar: {
-         public_id: String,
-         url: String,
-      },
-      refreshToken: {
+
+      role: {
          type: String,
+         enum: Object.values(UserRole),
+         default: UserRole.EMPLOYEE,
+      },
+
+      isActive: {
+         type: Boolean,
+         default: true,
       },
    },
+
    {
       timestamps: true,
       versionKey: false,
+   }
+);
+userSchema.index(
+   {
+      organizationId: 1,
+      email: 1,
+   },
+   {
+      unique: true,
    }
 );
 
